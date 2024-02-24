@@ -13,8 +13,25 @@
 <body>
     <script>
         window.onload = function () {
-            window.location.href = "https://github.com/bachhs/flbluetooth/releases/download/1.2.1/com.bachhs.flashbluetooth_1.2.1.apk";
-        }
+            const repo = 'bachhs/flbluetooth';
+            const apiUrl = `https://api.github.com/repos/${repo}/releases/latest`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.assets) {
+                        const apkAsset = data.assets.find(asset => asset.name.endsWith('.apk'));
+                        if (apkAsset && apkAsset.browser_download_url) {
+                            window.location.href = apkAsset.browser_download_url;
+                        } else {
+                            console.error('APK file not found in the latest release.');
+                        }
+                    } else {
+                        console.error('No release data found.');
+                    }
+                })
+                .catch(error => console.error('Error fetching latest release:', error));
+        };
     </script>
 </body>
 
